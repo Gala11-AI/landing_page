@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 7%;
+    --foreground: 0 0% 98%;
+    --primary: 180 100% 50%;
+    --primary-foreground: 0 0% 7%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --radius: 0.75rem;
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-black text-white antialiased;
+  }
+}
+
+@layer components {
+  .logo-cropped {
+    object-fit: cover;
+    object-position: center;
+    height: 100%;
+    width: auto;
+    clip-path: inset(25% 0 25% 0);
+  }
+  
+  .electric-glow {
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3), 0 0 40px rgba(0, 255, 255, 0.1);
+  }
+  
+  .electric-text {
+    background: linear-gradient(45deg, #00ffff, #0080ff, #00ffff);
+    background-size: 200% 200%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: electric-flow 3s ease-in-out infinite;
+  }
+  
+  .electric-border {
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.1);
+  }
+  
+  .electric-button {
+    background: linear-gradient(45deg, #001a1a, #003333);
+    border: 1px solid #00ffff;
+    color: white !important;
+    transition: all 0.3s ease;
+  }
+  
+  .electric-button:hover {
+    background: linear-gradient(45deg, #003333, #004d4d);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    transform: translateY(-1px);
+  }
+}
+
+@keyframes electric-flow {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
