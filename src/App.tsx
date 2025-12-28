@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { ChevronDown, ShieldCheck, BookOpen, BarChart3, Check } from 'lucide-react'
+import { createClient } from '@supabase/supabase-js'
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -7,6 +8,15 @@ import { twMerge } from "tailwind-merge"
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
+
+// --- Supabase Client ---
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+
+// Only initialize if keys are present to avoid errors during build/dev if not set
+const supabase = (supabaseUrl && supabaseAnonKey) 
+  ? createClient(supabaseUrl, supabaseAnonKey) 
+  : null
 
 // --- Flattened UI Components (Replacing @acme/ui) ---
 const Button = ({ className, variant = "default", size = "default", ...props }: any) => {
@@ -86,14 +96,44 @@ function WaitlistForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
-    // Artificial delay to simulate API
-    await new Promise(resolve => setTimeout(resolve, 800))
-    setIsLoading(false)
-    
-    if (step === 1) {
-      setStep(2)
-    } else if (step === 2) {
-      setStep(3)
+
+    try {
+      if (!supabase) {
+        // Fallback for when backend is not connected yet
+        console.warn("Supabase keys not found. Simulating success...")
+        await new Promise(resolve => setTimeout(resolve, 800))
+        if (step === 1) setStep(2)
+        else setStep(3)
+        return
+      }
+
+      if (step === 1) {
+        // Step 1: Just insert/upsert the email
+        const { error } = await supabase
+          .from('waitlist')
+          .upsert({ email: formData.email }, { onConflict: 'email' })
+        
+        if (error) throw error
+        setStep(2)
+      } else if (step === 2) {
+        // Step 2: Update with additional info
+        const { error } = await supabase
+          .from('waitlist')
+          .update({ 
+            name: formData.name, 
+            company: formData.company, 
+            role: formData.role 
+          })
+          .eq('email', formData.email)
+        
+        if (error) throw error
+        setStep(3)
+      }
+    } catch (error: any) {
+      console.error("Waitlist error:", error.message)
+      alert("Something went wrong. Please try again.")
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -201,7 +241,7 @@ export default function App() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <div className="h-8 sm:h-10 w-auto">
-                <img src="/logo.png" alt="Gala11" className="logo-cropped h-full" />
+                <img src="./logo.png" alt="Gala11" className="logo-cropped h-full" />
               </div>
               <span className="ml-3 text-xl sm:text-2xl font-bold text-white tracking-tight">Gala11</span>
             </div>
@@ -241,7 +281,7 @@ export default function App() {
             <div className="mt-16 relative">
               <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-2xl blur opacity-20"></div>
               <div className="relative bg-gray-900 border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
-                <img src="/demo-preview.webp" alt="Gala11 Preview" className="w-full h-auto opacity-80" />
+                <img src="./demo-preview.webp" alt="Gala11 Preview" className="w-full h-auto opacity-80" />
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent"></div>
               </div>
             </div>
