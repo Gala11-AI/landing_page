@@ -9,18 +9,15 @@ permissions:
   pages: write
   id-token: write
 
-# This prevents multiple deployments from running at the same time
 concurrency:
   group: "pages"
   cancel-in-progress: false
 
 jobs:
   build-and-deploy:
-    # --- THIS PART WAS MISSING ---
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    # -----------------------------
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -36,6 +33,11 @@ jobs:
         run: npm install
 
       - name: Build
+        # --- ADDED THIS SECTION ---
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+        # --------------------------
         run: npm run build
 
       - name: Setup Pages
