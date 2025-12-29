@@ -294,7 +294,7 @@ export default function App() {
             <div className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium leading-5 text-cyan-400 ring-1 ring-inset ring-cyan-400/20 bg-cyan-400/10 mb-8 animate-in fade-in slide-in-from-top-4 duration-700">
               Now accepting early access requests
             </div>
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold mb-8 tracking-tight leading-[1.1]">
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold mb-8 tracking-tight leading-[1.2]">
               <span className="block text-white">Data Products that</span>
               <span className="electric-text block mt-2">
                 Manage Themselves

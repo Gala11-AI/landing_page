@@ -40,6 +40,8 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: electric-flow 3s ease-in-out infinite;
+    padding-bottom: 0.1em;
+    margin-bottom: -0.1em;
   }
   
   .electric-border {
