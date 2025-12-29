@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { ChevronDown, ShieldCheck, BookOpen, BarChart3, Check, Zap, Info, Shield, MessageSquare, Mail } from 'lucide-react'
 import { createClient } from '@supabase/supabase-js'
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
@@ -54,10 +53,48 @@ const Input = ({ className, ...props }: any) => (
 
 // --- Internal Components ---
 function HeroVisualization() {
+  const containerRef = React.useRef<HTMLDivElement>(null)
+  const [scale, setScale] = React.useState(1)
+
+  React.useEffect(() => {
+    const updateScale = () => {
+      if (containerRef.current) {
+        const { offsetWidth } = containerRef.current
+        const newScale = offsetWidth / 1000
+        setScale(newScale)
+      }
+    }
+
+    updateScale()
+    window.addEventListener('resize', updateScale)
+    const observer = new ResizeObserver(updateScale)
+    if (containerRef.current) {
+      observer.observe(containerRef.current)
+    }
+
+    return () => {
+      window.removeEventListener('resize', updateScale)
+      observer.disconnect()
+    }
+  }, [])
+
   return (
-    <div className="relative w-full h-full bg-[#0d0d0d] rounded-2xl overflow-hidden flex flex-col border border-white/10 shadow-2xl">
-      {/* Top Bar Mock */}
-      <div className="h-12 bg-black/40 border-b border-white/10 flex items-center justify-between px-4 z-20 backdrop-blur-sm">
+    <div ref={containerRef} className="relative w-full h-full bg-[#0d0d0d] rounded-2xl overflow-hidden flex flex-col border border-white/10 shadow-2xl">
+      <div 
+        style={{ 
+          transform: `scale(${scale})`, 
+          transformOrigin: 'top left',
+          width: '1000px',
+          height: `${100 / scale}%`,
+          minHeight: '625px',
+          position: 'absolute',
+          top: 0,
+          left: 0
+        }}
+        className="flex flex-col"
+      >
+        {/* Top Bar Mock */}
+        <div className="h-12 bg-black/40 border-b border-white/10 flex items-center justify-between px-4 z-20 backdrop-blur-sm">
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full bg-red-500/50" />
           <div className="w-3 h-3 rounded-full bg-yellow-500/50" />
@@ -228,7 +265,7 @@ function HeroVisualization() {
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto space-y-4 min-h-0 pr-1 scrollbar-hide">
+            <div className="flex-1 overflow-y-auto space-y-4 min-h-0 scrollbar-hide pr-1">
               {/* Message 1: Agent Proactive Proposal */}
               <div className="flex flex-col gap-1.5">
                 <div className="flex items-center gap-2">
@@ -305,6 +342,7 @@ function HeroVisualization() {
           </div>
         </div>
       </div>
+      </div>
     </div>
   )
 }
@@ -322,7 +360,9 @@ function FaqItem({ question, answer }: { question: string; answer: string }) {
           {question}
         </span>
         <span className={cn("ml-6 flex-shrink-0 transition-transform duration-300", isOpen && "rotate-180")}>
-          <ChevronDown className="w-5 h-5 text-gray-500" />
+          <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
         </span>
       </button>
       <div 
@@ -336,81 +376,6 @@ function FaqItem({ question, answer }: { question: string; answer: string }) {
         </p>
       </div>
     </div>
-  )
-}
-
-function ContactForm() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: ''
-  })
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setStatus('loading')
-    
-    try {
-      // Mock API call since there's no contact endpoint yet
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      console.log('Contact form submitted:', formData)
-      setStatus('success')
-      setFormData({ name: '', email: '', message: '' })
-    } catch (error) {
-      setStatus('error')
-    }
-  }
-
-  if (status === 'success') {
-    return (
-      <div className="bg-cyan-500/10 border border-cyan-500/20 rounded-xl p-6 text-center animate-in fade-in duration-300">
-        <p className="text-cyan-400 font-medium mb-1">Message sent!</p>
-        <p className="text-gray-400 text-sm">We'll get back to you soon.</p>
-        <button 
-          onClick={() => setStatus('idle')}
-          className="mt-4 text-xs text-gray-500 hover:text-white transition-colors"
-        >
-          Send another message
-        </button>
-      </div>
-    )
-  }
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-3">
-      <div className="grid grid-cols-2 gap-3">
-        <Input
-          placeholder="Name"
-          required
-          value={formData.name}
-          onChange={(e: any) => setFormData({ ...formData, name: e.target.value })}
-          className="bg-gray-900/50 border-gray-700 text-sm h-10"
-        />
-        <Input
-          type="email"
-          placeholder="Email"
-          required
-          value={formData.email}
-          onChange={(e: any) => setFormData({ ...formData, email: e.target.value })}
-          className="bg-gray-900/50 border-gray-700 text-sm h-10"
-        />
-      </div>
-      <textarea
-        placeholder="How can we help?"
-        required
-        value={formData.message}
-        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-        className="w-full bg-gray-900/50 border border-gray-700 rounded-md p-3 text-sm min-h-[80px] text-white focus:outline-none focus:border-cyan-400 transition-colors"
-      />
-      <Button 
-        type="submit" 
-        disabled={status === 'loading'}
-        className="w-full electric-button text-xs h-10"
-      >
-        {status === 'loading' ? 'Sending...' : 'Send Message'}
-      </Button>
-    </form>
   )
 }
 
@@ -474,7 +439,9 @@ function WaitlistForm() {
     return (
       <div className="bg-gray-900/50 backdrop-blur-md border electric-border rounded-xl p-6 text-center animate-in fade-in zoom-in duration-300">
         <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-          <Check className="w-6 h-6 text-green-500" />
+          <svg className="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
         </div>
         <h3 className="text-xl font-bold text-white mb-2">You're on the list!</h3>
         <p className="text-gray-300">We'll reach out to <strong>{formData.email}</strong> as soon as early access spots open up.</p>
@@ -644,7 +611,7 @@ export default function App() {
             <div className="mt-16 relative group">
               <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
               <div className="relative bg-gray-900 border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
-                <div className="aspect-[16/10] sm:aspect-[16/9] bg-gray-900 flex items-center justify-center overflow-hidden">
+                <div className="aspect-[16/10] bg-gray-900 flex items-center justify-center overflow-hidden">
                   <HeroVisualization />
                 </div>
               </div>
@@ -685,7 +652,9 @@ export default function App() {
               <div className="space-y-8">
                 <div className="flex gap-4">
                   <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-cyan-500/10 flex items-center justify-center border border-cyan-500/20">
-                    <ShieldCheck className="w-6 h-6 text-cyan-400" />
+                    <svg className="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
                   </div>
                   <div>
                     <h3 className="text-xl font-bold text-white mb-2">Autonomous Governance</h3>
@@ -695,7 +664,9 @@ export default function App() {
 
                 <div className="flex gap-4">
                   <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-purple-500/10 flex items-center justify-center border border-purple-500/20">
-                    <BookOpen className="w-6 h-6 text-purple-400" />
+                    <svg className="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
                   </div>
                   <div>
                     <h3 className="text-xl font-bold text-white mb-2">Living Documentation</h3>
@@ -705,7 +676,9 @@ export default function App() {
 
                 <div className="flex gap-4">
                   <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
-                    <BarChart3 className="w-6 h-6 text-emerald-400" />
+                    <svg className="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
                   </div>
                   <div>
                     <h3 className="text-xl font-bold text-white mb-2">Product-Centric Observability</h3>
@@ -714,7 +687,7 @@ export default function App() {
                 </div>
               </div>
             </div>
-            
+
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-4 pt-12">
                 {/* Autonomous Governance Mock */}
@@ -728,7 +701,7 @@ export default function App() {
                     <div className="bg-black/40 border border-white/5 rounded-lg p-3 mb-3">
                       <div className="flex items-center gap-2 mb-2">
                         <div className="w-5 h-5 rounded bg-cyan-500/20 flex items-center justify-center">
-                          <Zap className="w-3 h-3 text-cyan-400" />
+                          <svg className="w-3 h-3 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                         </div>
                         <div className="h-1.5 w-16 bg-gray-700 rounded"></div>
                       </div>
@@ -760,7 +733,9 @@ export default function App() {
                         <div className="h-1.5 w-2/3 bg-gray-800/50 rounded"></div>
                       </div>
                       <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-purple-500/20 border border-purple-500/30">
-                        <Check className="w-2.5 h-2.5 text-purple-400" />
+                        <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
                         <span className="text-[9px] text-purple-300 font-medium">Updated by AI Agent</span>
                       </div>
                     </div>
@@ -913,21 +888,6 @@ export default function App() {
       {/* Footer */}
       <footer className="bg-black text-white py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center border-b border-white/5 pb-8 mb-8">
-            <div className="text-left">
-              <div className="flex items-center mb-4">
-                <img src="/logo.png" alt="Gala11" className="h-8 logo-cropped" />
-                <span className="ml-3 text-xl font-bold text-white tracking-tight">Gala11</span>
-              </div>
-              <p className="text-gray-500 max-w-xs text-sm">
-                The first AI-agentic platform for Data Product Management.
-              </p>
-            </div>
-            <div>
-              <h4 className="text-white font-semibold mb-4 text-sm">Get in Touch</h4>
-              <ContactForm />
-            </div>
-          </div>
           <div className="text-center text-gray-500 text-sm">
             <p>&copy; {new Date().getFullYear()} Gala11. All rights reserved.</p>
           </div>
