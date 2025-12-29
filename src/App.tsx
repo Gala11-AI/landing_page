@@ -53,6 +53,262 @@ const Input = ({ className, ...props }: any) => (
 )
 
 // --- Internal Components ---
+function HeroVisualization() {
+  return (
+    <div className="relative w-full h-full bg-[#0d0d0d] rounded-2xl overflow-hidden flex flex-col border border-white/10 shadow-2xl">
+      {/* Top Bar Mock */}
+      <div className="h-12 bg-black/40 border-b border-white/10 flex items-center justify-between px-4 z-20 backdrop-blur-sm">
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded-full bg-red-500/50" />
+          <div className="w-3 h-3 rounded-full bg-yellow-500/50" />
+          <div className="w-3 h-3 rounded-full bg-green-500/50" />
+          <div className="ml-4 flex items-center bg-white/5 rounded-md px-3 py-1 border border-white/10">
+            <span className="text-[11px] text-gray-400 font-medium">Yeram Data Product</span>
+            <svg className="w-3 h-3 ml-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+            </svg>
+          </div>
+        </div>
+        <div className="flex items-center gap-6">
+          <div className="flex items-center bg-white/5 rounded-lg p-1">
+            <button className="px-4 py-1 text-[11px] font-medium text-white bg-white/10 rounded-md">Design</button>
+            <button className="px-4 py-1 text-[11px] font-medium text-gray-500 hover:text-gray-300 transition-colors">Documentation</button>
+          </div>
+          <button className="flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-md text-[11px] text-gray-300 hover:bg-white/10 transition-colors">
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+            </svg>
+            Share
+          </button>
+        </div>
+      </div>
+
+      <div className="flex-1 flex overflow-hidden relative">
+        {/* Main Canvas Area */}
+        <div className="flex-1 relative overflow-hidden bg-[radial-gradient(#1a1a1a_1px,transparent_1px)] [background-size:24px_24px]">
+          {/* SVG for relationships */}
+          <svg className="absolute inset-0 w-full h-full pointer-events-none z-10">
+            <defs>
+              <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+                <polygon points="0 0, 10 3.5, 0 7" fill="#444" />
+              </marker>
+            </defs>
+            {/* Relationship lines */}
+            <path d="M 180 150 L 220 150 L 220 280 L 240 280" stroke="#555" strokeWidth="1.5" fill="none" />
+            <path d="M 360 280 L 400 280 L 400 220 L 420 220" stroke="#555" strokeWidth="1.5" fill="none" />
+            <path d="M 540 220 L 580 220 L 580 100 L 600 100" stroke="#555" strokeWidth="1.5" fill="none" />
+          </svg>
+
+          {/* Cardinality Labels */}
+          <div className="absolute top-[138px] left-[188px] z-20 px-1.5 py-0.5 bg-[#1a1a1a] border border-white/10 rounded text-[9px] text-gray-500 font-mono">1:N</div>
+          <div className="absolute top-[268px] left-[378px] z-20 px-1.5 py-0.5 bg-[#1a1a1a] border border-white/10 rounded text-[9px] text-gray-500 font-mono">N:1</div>
+          <div className="absolute top-[208px] left-[558px] z-20 px-1.5 py-0.5 bg-[#1a1a1a] border border-white/10 rounded text-[9px] text-gray-500 font-mono">1:N</div>
+
+          {/* Table 1: dim_directory_entries */}
+          <div className="absolute top-10 left-10 w-36 bg-[#0a0a0a] rounded-lg border border-white/10 shadow-xl overflow-hidden z-10 group hover:border-cyan-500/50 transition-colors">
+            <div className="bg-[#1e40af] px-2 py-1.5 text-[10px] font-bold text-white flex items-center justify-between">
+              <span>dim_entries</span>
+              <div className="w-1.5 h-1.5 rounded-full bg-white/30" />
+            </div>
+            <div className="p-1 space-y-0.5">
+              <div className="flex items-center justify-between px-1.5 py-1 hover:bg-white/5 rounded">
+                <span className="text-[9px] text-gray-300">id</span>
+                <span className="text-[8px] text-gray-500 font-mono italic">varchar</span>
+              </div>
+              <div className="flex items-center justify-between px-1.5 py-1 hover:bg-white/5 rounded">
+                <span className="text-[9px] text-gray-300">title</span>
+                <span className="text-[8px] text-gray-500 font-mono italic">varchar</span>
+              </div>
+              <div className="flex items-center justify-between px-1.5 py-1 hover:bg-white/5 rounded">
+                <span className="text-[9px] text-gray-300">phone</span>
+                <span className="text-[8px] text-gray-500 font-mono italic">varchar</span>
+              </div>
+              <div className="flex items-center justify-between px-1.5 py-1 hover:bg-white/5 rounded">
+                <span className="text-[9px] text-gray-300">email</span>
+                <span className="text-[8px] text-gray-500 font-mono italic">varchar</span>
+              </div>
+              <div className="flex items-center justify-between px-1.5 py-1 hover:bg-white/5 rounded">
+                <span className="text-[9px] text-gray-300">address</span>
+                <span className="text-[8px] text-gray-500 font-mono italic">varchar</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Table 2: directory_entries_cities */}
+          <div className="absolute top-64 left-60 w-32 bg-[#0a0a0a] rounded-lg border border-white/10 shadow-xl overflow-hidden z-10 group hover:border-purple-500/50 transition-colors">
+            <div className="bg-[#6b21a8] px-2 py-1.5 text-[10px] font-bold text-white">
+              <span>bdg_cities_entries</span>
+            </div>
+            <div className="p-1 space-y-0.5">
+              <div className="flex items-center gap-1.5 px-1.5 py-1 hover:bg-white/5 rounded">
+                <svg className="w-2.5 h-2.5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
+                <span className="text-[9px] text-gray-300">entry_id</span>
+              </div>
+              <div className="flex items-center gap-1.5 px-1.5 py-1 hover:bg-white/5 rounded">
+                <svg className="w-2.5 h-2.5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
+                <span className="text-[9px] text-gray-300">city_id</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Table 3: dim_cities */}
+          <div className="absolute top-40 left-[420px] w-32 bg-[#0a0a0a] rounded-lg border border-white/10 shadow-xl overflow-hidden z-10 group hover:border-blue-500/50 transition-colors">
+            <div className="bg-[#2563eb] px-2 py-1.5 text-[10px] font-bold text-white">
+              <span>dim_cities</span>
+            </div>
+            <div className="p-1 space-y-0.5">
+              <div className="flex items-center justify-between px-1.5 py-1 hover:bg-white/5 rounded">
+                <span className="text-[9px] text-gray-300">id</span>
+                <span className="text-[8px] text-gray-500 font-mono italic">varchar</span>
+              </div>
+              <div className="flex items-center justify-between px-1.5 py-1 hover:bg-white/5 rounded">
+                <span className="text-[9px] text-gray-300">name</span>
+                <span className="text-[8px] text-gray-500 font-mono italic">varchar</span>
+              </div>
+              <div className="flex items-center justify-between px-1.5 py-1 hover:bg-white/5 rounded">
+                <span className="text-[9px] text-gray-300">country_id</span>
+                <span className="text-[8px] text-gray-500 font-mono italic">varchar</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Table 4: dim_countries */}
+          <div className="absolute top-10 left-[600px] w-32 bg-[#0a0a0a] rounded-lg border border-white/10 shadow-xl overflow-hidden z-10 group hover:border-cyan-500/50 transition-colors">
+            <div className="bg-[#0891b2] px-2 py-1.5 text-[10px] font-bold text-white">
+              <span>dim_countries</span>
+            </div>
+            <div className="p-1 space-y-0.5">
+              <div className="flex items-center justify-between px-1.5 py-1 hover:bg-white/5 rounded">
+                <span className="text-[9px] text-gray-300">id</span>
+                <span className="text-[8px] text-gray-500 font-mono italic">varchar</span>
+              </div>
+              <div className="flex items-center justify-between px-1.5 py-1 hover:bg-white/5 rounded">
+                <span className="text-[9px] text-gray-300">name</span>
+                <span className="text-[8px] text-gray-500 font-mono italic">varchar</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Floating Action Button Mock */}
+          <div className="absolute bottom-6 left-6 flex flex-col gap-2 z-20">
+            <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:bg-white/10 transition-colors cursor-pointer shadow-lg">+</div>
+            <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:bg-white/10 transition-colors cursor-pointer shadow-lg">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+            </div>
+          </div>
+        </div>
+
+        {/* Sidebar Mock */}
+        <div className="w-64 bg-black/40 border-l border-white/10 flex flex-col z-20 backdrop-blur-sm">
+          <div className="p-4 flex-1 flex flex-col min-h-0">
+            <div className="flex items-center justify-between mb-4 flex-shrink-0">
+              <span className="text-[10px] font-mono text-gray-500 uppercase tracking-widest">Quick Actions</span>
+              <div className="flex items-center gap-1.5">
+                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="text-[9px] text-emerald-500/80 font-medium">Agent Online</span>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-2 mb-6 flex-shrink-0">
+              <button className="flex items-center justify-center gap-1.5 py-2 px-2 bg-white/5 border border-white/10 rounded-lg text-[9px] text-gray-300 hover:bg-white/10 transition-all hover:border-cyan-500/30 group">
+                <span className="w-1 h-1 rounded-full bg-cyan-400 group-hover:animate-ping" />
+                Improvements
+              </button>
+              <button className="flex items-center justify-center gap-1.5 py-2 px-2 bg-white/5 border border-white/10 rounded-lg text-[9px] text-gray-300 hover:bg-white/10 transition-all hover:border-cyan-500/30 group">
+                <span className="w-1 h-1 rounded-full bg-purple-400" />
+                Generate
+              </button>
+              <button className="flex items-center justify-center gap-1.5 py-2 px-2 bg-white/5 border border-white/10 rounded-lg text-[9px] text-gray-300 hover:bg-white/10 transition-all hover:border-cyan-500/30 group">
+                <span className="w-1 h-1 rounded-full bg-yellow-400" />
+                Analyze
+              </button>
+              <button className="flex items-center justify-center gap-1.5 py-2 px-2 bg-white/5 border border-white/10 rounded-lg text-[9px] text-gray-300 hover:bg-white/10 transition-all hover:border-cyan-500/30 group">
+                <span className="w-1 h-1 rounded-full bg-green-400" />
+                Docs
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto space-y-4 min-h-0 pr-1 scrollbar-hide">
+              {/* Message 1: Agent Proactive Proposal */}
+              <div className="flex flex-col gap-1.5">
+                <div className="flex items-center gap-2">
+                  <div className="w-5 h-5 rounded-full bg-cyan-500/20 flex items-center justify-center border border-cyan-500/30">
+                    <span className="text-[9px]">🤖</span>
+                  </div>
+                  <span className="text-[9px] font-medium text-gray-400">Gala11 Agent</span>
+                </div>
+                <div className="bg-white/5 border border-white/10 rounded-2xl rounded-tl-none p-3 relative overflow-hidden group">
+                  <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <p className="text-[10px] text-gray-300 leading-relaxed relative z-10">
+                    I've detected a performance bottleneck in the <span className="text-cyan-400 font-medium">dim_entries</span> query. Shall I optimize the indexes and update the documentation for you?
+                  </p>
+                </div>
+              </div>
+
+              {/* Message 2: User Approval */}
+              <div className="flex flex-col gap-1.5 items-end">
+                <div className="flex items-center gap-2 flex-row-reverse">
+                  <div className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center border border-white/20">
+                    <span className="text-[9px]">👤</span>
+                  </div>
+                  <span className="text-[9px] font-medium text-gray-500">You</span>
+                </div>
+                <div className="bg-cyan-500/10 border border-cyan-500/20 rounded-2xl rounded-tr-none p-2.5 max-w-[90%]">
+                  <p className="text-[10px] text-cyan-100 leading-relaxed">
+                    Yes, please go ahead and apply those changes.
+                  </p>
+                </div>
+              </div>
+
+              {/* Message 3: Agent Performing Action */}
+              <div className="flex flex-col gap-1.5">
+                <div className="flex items-center gap-2">
+                  <div className="w-5 h-5 rounded-full bg-cyan-500/20 flex items-center justify-center border border-cyan-500/30">
+                    <span className="text-[9px]">🤖</span>
+                  </div>
+                  <span className="text-[9px] font-medium text-gray-400">Gala11 Agent</span>
+                </div>
+                <div className="bg-white/5 border border-white/10 rounded-2xl rounded-tl-none p-3 relative overflow-hidden">
+                  <div className="space-y-2 relative z-10">
+                    <div className="flex items-center justify-between text-[8px] text-gray-400">
+                      <span>Applying optimizations...</span>
+                      <span>85%</span>
+                    </div>
+                    <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                      <div className="h-full bg-cyan-500/50 w-[85%] animate-pulse" />
+                    </div>
+                    <div className="flex items-center gap-1.5 text-[8px] text-emerald-400/80">
+                      <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+                      Documentation updated
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Input Area */}
+            <div className="mt-4 pt-4 border-t border-white/10 flex-shrink-0">
+              <div className="bg-black/40 border border-white/10 rounded-xl px-3 py-2.5 flex items-center justify-between group focus-within:border-cyan-500/50 transition-all">
+                <span className="text-[10px] text-gray-600 italic">Ask me anything...</span>
+                <div className="flex items-center gap-2">
+                  <kbd className="hidden sm:inline-flex h-4 items-center gap-1 rounded border border-white/10 bg-white/5 px-1.5 font-mono text-[8px] font-medium text-gray-500">
+                    <span>⌘</span>K
+                  </kbd>
+                  <div className="w-6 h-6 rounded-lg bg-cyan-500/20 flex items-center justify-center text-cyan-400 group-hover:bg-cyan-500/30 transition-colors cursor-pointer">
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function FaqItem({ question, answer }: { question: string; answer: string }) {
   const [isOpen, setIsOpen] = useState(false)
 
@@ -80,6 +336,81 @@ function FaqItem({ question, answer }: { question: string; answer: string }) {
         </p>
       </div>
     </div>
+  )
+}
+
+function ContactForm() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: ''
+  })
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setStatus('loading')
+    
+    try {
+      // Mock API call since there's no contact endpoint yet
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      console.log('Contact form submitted:', formData)
+      setStatus('success')
+      setFormData({ name: '', email: '', message: '' })
+    } catch (error) {
+      setStatus('error')
+    }
+  }
+
+  if (status === 'success') {
+    return (
+      <div className="bg-cyan-500/10 border border-cyan-500/20 rounded-xl p-6 text-center animate-in fade-in duration-300">
+        <p className="text-cyan-400 font-medium mb-1">Message sent!</p>
+        <p className="text-gray-400 text-sm">We'll get back to you soon.</p>
+        <button 
+          onClick={() => setStatus('idle')}
+          className="mt-4 text-xs text-gray-500 hover:text-white transition-colors"
+        >
+          Send another message
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-3">
+      <div className="grid grid-cols-2 gap-3">
+        <Input
+          placeholder="Name"
+          required
+          value={formData.name}
+          onChange={(e: any) => setFormData({ ...formData, name: e.target.value })}
+          className="bg-gray-900/50 border-gray-700 text-sm h-10"
+        />
+        <Input
+          type="email"
+          placeholder="Email"
+          required
+          value={formData.email}
+          onChange={(e: any) => setFormData({ ...formData, email: e.target.value })}
+          className="bg-gray-900/50 border-gray-700 text-sm h-10"
+        />
+      </div>
+      <textarea
+        placeholder="How can we help?"
+        required
+        value={formData.message}
+        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+        className="w-full bg-gray-900/50 border border-gray-700 rounded-md p-3 text-sm min-h-[80px] text-white focus:outline-none focus:border-cyan-400 transition-colors"
+      />
+      <Button 
+        type="submit" 
+        disabled={status === 'loading'}
+        className="w-full electric-button text-xs h-10"
+      >
+        {status === 'loading' ? 'Sending...' : 'Send Message'}
+      </Button>
+    </form>
   )
 }
 
@@ -263,7 +594,7 @@ export default function App() {
             <div className="flex items-center">
               <div className="h-8 sm:h-10 w-auto">
                 <img 
-                  src="./logo.png" 
+                  src="/logo.png" 
                   alt="Gala11" 
                   className="logo-cropped h-full"
                 />
@@ -271,7 +602,6 @@ export default function App() {
               <span className="ml-3 text-xl sm:text-2xl font-bold text-white tracking-tight">Gala11</span>
             </div>
             <div className="flex items-center space-x-6">
-              {/* Sign In option removed as per request */}
               <Button 
                 onClick={() => {
                   const el = document.getElementById('bottom-waitlist')
@@ -311,16 +641,11 @@ export default function App() {
               </p>
             </div>
 
-            <div className="mt-16 relative">
-              <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-2xl blur opacity-20 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+            <div className="mt-16 relative group">
+              <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
               <div className="relative bg-gray-900 border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
-                <div className="aspect-[16/9] bg-gray-800 flex items-center justify-center overflow-hidden">
-                  <img 
-                    src="./demo-preview.webp" 
-                    alt="Gala11 AI Agent Platform" 
-                    className="w-full h-full object-cover opacity-80"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent"></div>
+                <div className="aspect-[16/10] sm:aspect-[16/9] bg-gray-900 flex items-center justify-center overflow-hidden">
+                  <HeroVisualization />
                 </div>
               </div>
             </div>
@@ -588,6 +913,21 @@ export default function App() {
       {/* Footer */}
       <footer className="bg-black text-white py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center border-b border-white/5 pb-8 mb-8">
+            <div className="text-left">
+              <div className="flex items-center mb-4">
+                <img src="/logo.png" alt="Gala11" className="h-8 logo-cropped" />
+                <span className="ml-3 text-xl font-bold text-white tracking-tight">Gala11</span>
+              </div>
+              <p className="text-gray-500 max-w-xs text-sm">
+                The first AI-agentic platform for Data Product Management.
+              </p>
+            </div>
+            <div>
+              <h4 className="text-white font-semibold mb-4 text-sm">Get in Touch</h4>
+              <ContactForm />
+            </div>
+          </div>
           <div className="text-center text-gray-500 text-sm">
             <p>&copy; {new Date().getFullYear()} Gala11. All rights reserved.</p>
           </div>
