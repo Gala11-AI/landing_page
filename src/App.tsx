@@ -55,13 +55,16 @@ const Input = ({ className, ...props }: any) => (
 function HeroVisualization() {
   const containerRef = React.useRef<HTMLDivElement>(null)
   const [scale, setScale] = React.useState(1)
+  const [visibleStep, setVisibleStep] = React.useState(0)
 
   React.useEffect(() => {
     const updateScale = () => {
       if (containerRef.current) {
         const { offsetWidth } = containerRef.current
-        const newScale = offsetWidth / 1000
-        setScale(newScale)
+        if (offsetWidth > 0) {
+          const newScale = offsetWidth / 1000
+          setScale(newScale)
+        }
       }
     }
 
@@ -77,6 +80,47 @@ function HeroVisualization() {
       observer.disconnect()
     }
   }, [])
+
+  React.useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>
+    
+    const run = (step: number) => {
+      setVisibleStep(step)
+      
+      // Stop after the last message (step 7)
+      if (step >= 7) return;
+
+      let nextStep = step + 1
+      let delay = 800
+      
+      if (step === 0) delay = 800
+      else if (step === 1) delay = 800
+      else if (step === 2) delay = 800
+      else if (step === 3) delay = 800
+      else if (step === 4) delay = 1300
+      else if (step === 5) delay = 1500
+      else if (step === 6) delay = 1500
+      
+      timer = setTimeout(() => run(nextStep), delay)
+    }
+
+    run(0)
+    return () => clearTimeout(timer)
+  }, [])
+
+  const getAnimationClass = (step: number) => {
+    const isVisible = visibleStep >= step
+    return `transition-all duration-700 ease-out ${
+      isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'
+    }`
+  }
+
+  const getMessageWrapperClass = (step: number) => {
+    const isVisible = visibleStep >= step
+    return `grid transition-all duration-500 ease-in-out ${
+      isVisible ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
+    }`
+  }
 
   return (
     <div ref={containerRef} className="relative w-full h-full bg-[#0d0d0d] rounded-2xl overflow-hidden flex flex-col border border-white/10 shadow-2xl">
@@ -131,18 +175,36 @@ function HeroVisualization() {
               </marker>
             </defs>
             {/* Relationship lines */}
-            <path d="M 180 150 L 220 150 L 220 280 L 240 280" stroke="#555" strokeWidth="1.5" fill="none" />
-            <path d="M 360 280 L 400 280 L 400 220 L 420 220" stroke="#555" strokeWidth="1.5" fill="none" />
-            <path d="M 540 220 L 580 220 L 580 100 L 600 100" stroke="#555" strokeWidth="1.5" fill="none" />
+            <path 
+              d="M 180 150 L 220 150 L 220 280 L 240 280" 
+              stroke="#555" 
+              strokeWidth="1.5" 
+              fill="none" 
+              className={`transition-opacity duration-700 ${visibleStep >= 2 ? 'opacity-100' : 'opacity-0'}`}
+            />
+            <path 
+              d="M 360 280 L 400 280 L 400 220 L 420 220" 
+              stroke="#555" 
+              strokeWidth="1.5" 
+              fill="none" 
+              className={`transition-opacity duration-700 ${visibleStep >= 3 ? 'opacity-100' : 'opacity-0'}`}
+            />
+            <path 
+              d="M 540 220 L 580 220 L 580 100 L 600 100" 
+              stroke="#555" 
+              strokeWidth="1.5" 
+              fill="none" 
+              className={`transition-opacity duration-700 ${visibleStep >= 4 ? 'opacity-100' : 'opacity-0'}`}
+            />
           </svg>
 
           {/* Cardinality Labels */}
-          <div className="absolute top-[138px] left-[188px] z-20 px-1.5 py-0.5 bg-[#1a1a1a] border border-white/10 rounded text-[9px] text-gray-500 font-mono">1:N</div>
-          <div className="absolute top-[268px] left-[378px] z-20 px-1.5 py-0.5 bg-[#1a1a1a] border border-white/10 rounded text-[9px] text-gray-500 font-mono">N:1</div>
-          <div className="absolute top-[208px] left-[558px] z-20 px-1.5 py-0.5 bg-[#1a1a1a] border border-white/10 rounded text-[9px] text-gray-500 font-mono">1:N</div>
+          <div className={`absolute top-[138px] left-[188px] z-20 px-1.5 py-0.5 bg-[#1a1a1a] border border-white/10 rounded text-[9px] text-gray-500 font-mono transition-opacity duration-700 ${visibleStep >= 2 ? 'opacity-100' : 'opacity-0'}`}>1:N</div>
+          <div className={`absolute top-[268px] left-[378px] z-20 px-1.5 py-0.5 bg-[#1a1a1a] border border-white/10 rounded text-[9px] text-gray-500 font-mono transition-opacity duration-700 ${visibleStep >= 3 ? 'opacity-100' : 'opacity-0'}`}>N:1</div>
+          <div className={`absolute top-[208px] left-[558px] z-20 px-1.5 py-0.5 bg-[#1a1a1a] border border-white/10 rounded text-[9px] text-gray-500 font-mono transition-opacity duration-700 ${visibleStep >= 4 ? 'opacity-100' : 'opacity-0'}`}>1:N</div>
 
           {/* Table 1: dim_directory_entries */}
-          <div className="absolute top-10 left-10 w-36 bg-[#0a0a0a] rounded-lg border border-white/10 shadow-xl overflow-hidden z-10 group hover:border-cyan-500/50 transition-colors">
+          <div className={`absolute top-10 left-10 w-36 bg-[#0a0a0a] rounded-lg border border-white/10 shadow-xl overflow-hidden z-10 group hover:border-cyan-500/50 ${getAnimationClass(1)}`}>
             <div className="bg-[#1e40af] px-2 py-1.5 text-[10px] font-bold text-white flex items-center justify-between">
               <span>dim_entries</span>
               <div className="w-1.5 h-1.5 rounded-full bg-white/30" />
@@ -172,7 +234,7 @@ function HeroVisualization() {
           </div>
 
           {/* Table 2: directory_entries_cities */}
-          <div className="absolute top-64 left-60 w-32 bg-[#0a0a0a] rounded-lg border border-white/10 shadow-xl overflow-hidden z-10 group hover:border-purple-500/50 transition-colors">
+          <div className={`absolute top-64 left-60 w-32 bg-[#0a0a0a] rounded-lg border border-white/10 shadow-xl overflow-hidden z-10 group hover:border-purple-500/50 ${getAnimationClass(2)}`}>
             <div className="bg-[#6b21a8] px-2 py-1.5 text-[10px] font-bold text-white">
               <span>bdg_cities_entries</span>
             </div>
@@ -189,7 +251,7 @@ function HeroVisualization() {
           </div>
 
           {/* Table 3: dim_cities */}
-          <div className="absolute top-40 left-[420px] w-32 bg-[#0a0a0a] rounded-lg border border-white/10 shadow-xl overflow-hidden z-10 group hover:border-blue-500/50 transition-colors">
+          <div className={`absolute top-40 left-[420px] w-32 bg-[#0a0a0a] rounded-lg border border-white/10 shadow-xl overflow-hidden z-10 group hover:border-blue-500/50 ${getAnimationClass(3)}`}>
             <div className="bg-[#2563eb] px-2 py-1.5 text-[10px] font-bold text-white">
               <span>dim_cities</span>
             </div>
@@ -210,7 +272,7 @@ function HeroVisualization() {
           </div>
 
           {/* Table 4: dim_countries */}
-          <div className="absolute top-10 left-[600px] w-32 bg-[#0a0a0a] rounded-lg border border-white/10 shadow-xl overflow-hidden z-10 group hover:border-cyan-500/50 transition-colors">
+          <div className={`absolute top-10 left-[600px] w-32 bg-[#0a0a0a] rounded-lg border border-white/10 shadow-xl overflow-hidden z-10 group hover:border-cyan-500/50 ${getAnimationClass(4)}`}>
             <div className="bg-[#0891b2] px-2 py-1.5 text-[10px] font-bold text-white">
               <span>dim_countries</span>
             </div>
@@ -267,56 +329,68 @@ function HeroVisualization() {
 
             <div className="flex-1 overflow-y-auto space-y-4 min-h-0 scrollbar-hide pr-1">
               {/* Message 1: Agent Proactive Proposal */}
-              <div className="flex flex-col gap-1.5">
-                <div className="flex items-center gap-2">
-                  <div className="w-5 h-5 rounded-full bg-cyan-500/20 flex items-center justify-center border border-cyan-500/30">
-                    <span className="text-[9px]">🤖</span>
+              <div className={getMessageWrapperClass(5)}>
+                <div className="overflow-hidden">
+                  <div className={`flex flex-col gap-1.5 ${getAnimationClass(5)}`}>
+                    <div className="flex items-center gap-2">
+                      <div className="w-5 h-5 rounded-full bg-cyan-500/20 flex items-center justify-center border border-cyan-500/30">
+                        <span className="text-[9px]">🤖</span>
+                      </div>
+                      <span className="text-[9px] font-medium text-gray-400">Gala11 Agent</span>
+                    </div>
+                    <div className="bg-white/5 border border-white/10 rounded-2xl rounded-tl-none p-3 relative overflow-hidden group">
+                      <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <p className="text-[10px] text-gray-300 leading-relaxed relative z-10">
+                        I've detected a performance bottleneck in the <span className="text-cyan-400 font-medium">dim_entries</span> query. Shall I optimize the indexes and update the documentation for you?
+                      </p>
+                    </div>
                   </div>
-                  <span className="text-[9px] font-medium text-gray-400">Gala11 Agent</span>
-                </div>
-                <div className="bg-white/5 border border-white/10 rounded-2xl rounded-tl-none p-3 relative overflow-hidden group">
-                  <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <p className="text-[10px] text-gray-300 leading-relaxed relative z-10">
-                    I've detected a performance bottleneck in the <span className="text-cyan-400 font-medium">dim_entries</span> query. Shall I optimize the indexes and update the documentation for you?
-                  </p>
                 </div>
               </div>
 
               {/* Message 2: User Approval */}
-              <div className="flex flex-col gap-1.5 items-end">
-                <div className="flex items-center gap-2 flex-row-reverse">
-                  <div className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center border border-white/20">
-                    <span className="text-[9px]">👤</span>
+              <div className={getMessageWrapperClass(6)}>
+                <div className="overflow-hidden">
+                  <div className={`flex flex-col gap-1.5 items-end ${getAnimationClass(6)}`}>
+                    <div className="flex items-center gap-2 flex-row-reverse">
+                      <div className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center border border-white/20">
+                        <span className="text-[9px]">👤</span>
+                      </div>
+                      <span className="text-[9px] font-medium text-gray-500">You</span>
+                    </div>
+                    <div className="bg-cyan-500/10 border border-cyan-500/20 rounded-2xl rounded-tr-none p-2.5 max-w-[90%]">
+                      <p className="text-[10px] text-cyan-100 leading-relaxed">
+                        Yes, please go ahead and apply those changes.
+                      </p>
+                    </div>
                   </div>
-                  <span className="text-[9px] font-medium text-gray-500">You</span>
-                </div>
-                <div className="bg-cyan-500/10 border border-cyan-500/20 rounded-2xl rounded-tr-none p-2.5 max-w-[90%]">
-                  <p className="text-[10px] text-cyan-100 leading-relaxed">
-                    Yes, please go ahead and apply those changes.
-                  </p>
                 </div>
               </div>
 
               {/* Message 3: Agent Performing Action */}
-              <div className="flex flex-col gap-1.5">
-                <div className="flex items-center gap-2">
-                  <div className="w-5 h-5 rounded-full bg-cyan-500/20 flex items-center justify-center border border-cyan-500/30">
-                    <span className="text-[9px]">🤖</span>
-                  </div>
-                  <span className="text-[9px] font-medium text-gray-400">Gala11 Agent</span>
-                </div>
-                <div className="bg-white/5 border border-white/10 rounded-2xl rounded-tl-none p-3 relative overflow-hidden">
-                  <div className="space-y-2 relative z-10">
-                    <div className="flex items-center justify-between text-[8px] text-gray-400">
-                      <span>Applying optimizations...</span>
-                      <span>85%</span>
+              <div className={getMessageWrapperClass(7)}>
+                <div className="overflow-hidden">
+                  <div className={`flex flex-col gap-1.5 ${getAnimationClass(7)}`}>
+                    <div className="flex items-center gap-2">
+                      <div className="w-5 h-5 rounded-full bg-cyan-500/20 flex items-center justify-center border border-cyan-500/30">
+                        <span className="text-[9px]">🤖</span>
+                      </div>
+                      <span className="text-[9px] font-medium text-gray-400">Gala11 Agent</span>
                     </div>
-                    <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
-                      <div className="h-full bg-cyan-500/50 w-[85%] animate-pulse" />
-                    </div>
-                    <div className="flex items-center gap-1.5 text-[8px] text-emerald-400/80">
-                      <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
-                      Documentation updated
+                    <div className="bg-white/5 border border-white/10 rounded-2xl rounded-tl-none p-3 relative overflow-hidden">
+                      <div className="space-y-2 relative z-10">
+                        <div className="flex items-center justify-between text-[8px] text-gray-400">
+                          <span>Applying optimizations...</span>
+                          <span>85%</span>
+                        </div>
+                        <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                          <div className="h-full bg-cyan-500/50 w-[85%] animate-pulse" />
+                        </div>
+                        <div className="flex items-center gap-1.5 text-[8px] text-emerald-400/80">
+                          <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+                          Documentation updated
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
